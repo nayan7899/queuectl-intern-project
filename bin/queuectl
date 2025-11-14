@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+// This 'shebang' line tells the system to run this file using node
+
+import { program } from '../src/cli.js';
+import { initDb } from '../src/core/db.js';
+
+async function main() {
+  try {
+    // 1. Ensure DB is initialized before doing anything
+    initDb();
+
+    // 2. Parse arguments and run the corresponding command
+    await program.parseAsync(process.argv);
+
+  } catch (error) {
+    console.error('An unexpected error occurred:', error.message);
+    process.exit(1);
+  }
+}
+
+main();
