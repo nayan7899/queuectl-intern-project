@@ -181,20 +181,26 @@ Your running worker will now pick up job-fail-123 again.
 ### 6. Managing Configuration
 
 View or update system configuration.
+
 ```bash
 # See the current settings
 $ queuectl config list
 --- Current Configuration ---
-┌──────────────┬────────┐
-│   (index)    │ (value)│
-├──────────────┼────────┤
-│ max_retries  │    3   │
-│ backoff_base │    2   │
-└──────────────┴────────┘
+┌────────────────────┬────────┐
+│      (index)       │ (value)│
+├────────────────────┼────────┤
+│ max_retries        │    3   │
+│ backoff_base       │    2   │
+│ poll_interval_ms │   2000 │
+└────────────────────┴────────┘
 
 # Change the number of max retries for new jobs
 $ queuectl config set max_retries 5
 ✅ Config updated: max_retries = 5
+
+# Make the worker poll faster (every 1 second)
+$ queuectl config set poll_interval_ms 1000
+✅ Config updated: poll_interval_ms = 1000
 ```
 ## 🧪 Testing
 
@@ -224,7 +230,7 @@ A simple test script is provided to validate the core system flow.
 ## ⚖️ Assumptions & Trade-offs
 * **Database**: SQLite was chosen for its simplicity and persistence. It provides excellent transaction support for atomic operations. The trade-off is that it's less suitable for massive-scale distributed systems than Redis or Kafka, but perfect for this assignment.
 
-* **Worker Polling**: Workers use a 2-second poll loop. This is simple to implement but may have up to a 2-second delay in job pickup. A more advanced system might use NOTIFY/LISTEN (e.g., in Postgres) or long-polling.
+* **Worker Polling**: Workers use a configurable poll loop (defaulting to 2000ms) when the queue is empty. This is simple and prevents busy-waiting. A more advanced system might use NOTIFY/LISTEN (e.g., in Postgres) for instant job pickup.
 
 * **Job Output**: Job output (stdout/stderr) is stored in the database. This is fine for small outputs but could be problematic for commands that generate gigabytes of logs.
 

@@ -6,12 +6,12 @@ export function registerEnqueueCommand(program) {
     .command('enqueue <jobJson>')
     .description('Add a new job to the queue. e.g., \'{"command":"echo hello"}\'')
     .action((jobJson) => {
-      // --- THE FIX ---
+  
       // Changed datetime("now") to datetime('now')
       const insertJobStmt = db.prepare(
         "INSERT INTO jobs (id, command, max_retries, state, run_at) VALUES (?, ?, ?, ?, datetime('now', 'utc'))"
       );
-      // --- END FIX ---
+      
 
       let jobData;
       try {

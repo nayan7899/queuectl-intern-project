@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { db, registerWorker, getWorkerStatus, removeWorker, claimJob } from './db.js';
+import { db, registerWorker, getWorkerStatus, removeWorker, claimJob, loadConfig } from './db.js';
 import { executeJob } from './runner.js';
 import { finalizeJob } from './manager.js';
 
@@ -39,7 +39,7 @@ export class Worker {
       if (status === 'stopping') {
         this.isShuttingDown = true;
         continue; // Go to end of loop
-      }
+      } 
 
       // 2. Try to claim a job (ATOMIC)
       this.isBusy = true;
@@ -64,7 +64,9 @@ export class Worker {
         
       } else {
         // 5. No jobs found. Sleep to prevent busy-looping.
-        await sleep(2000); // Poll every 2 seconds
+        const config = loadConfig();
+        const pollInterval = config.poll_interval_ms || 2000;
+        await sleep(pollInterval);
       }
     }
     

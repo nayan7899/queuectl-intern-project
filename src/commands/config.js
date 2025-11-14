@@ -11,11 +11,13 @@ export function registerConfigCommand(program) {
     .description('Set a configuration value (e.g., max_retries, backoff_base)')
     .action((key, value) => {
       let config = loadConfig();
+
+      
       
       // Check if the key is valid
-      if (key !== 'max_retries' && key !== 'backoff_base') {
+      if (key !== 'max_retries' && key !== 'backoff_base' && key !== 'poll_interval_ms') {
         console.error(`Error: Unknown config key "${key}".`);
-        console.log('Valid keys are: max_retries, backoff_base');
+        console.log('Valid keys are: max_retries, backoff_base, poll_interval_ms');
         return;
       }
       

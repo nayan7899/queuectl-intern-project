@@ -15,6 +15,7 @@ fs.mkdirSync(APP_DIR, { recursive: true });
 const DEFAULT_CONFIG = {
   max_retries: 3,
   backoff_base: 2,
+  poll_interval_ms: 2000,
 };
 
 // 4. Initialize and export the database connection
@@ -85,8 +86,6 @@ export function saveConfig(config) {
 export { db };
 
 
-// --- FUNCTIONS WITH MOVED STATEMENTS ---
-
 /**
  * Atomically claims the next available job.
  * @param {string} workerId - The ID of the worker claiming the job.
@@ -111,7 +110,6 @@ export function claimJob(workerId) {
 }
 
 export function registerWorker(workerId, pid) {
-  // MOVED from top level
   const registerWorkerStmt = db.prepare(
     "INSERT INTO workers (worker_id, pid, status) VALUES (?, ?, 'running')"
   );
@@ -119,19 +117,16 @@ export function registerWorker(workerId, pid) {
 }
 
 export function getWorkerStatus(workerId) {
-  // MOVED from top level
   const getWorkerStatusStmt = db.prepare("SELECT status FROM workers WHERE worker_id = ?");
   return getWorkerStatusStmt.get(workerId)?.status;
 }
 
 export function removeWorker(workerId) {
-  // MOVED from top level
   const removeWorkerStmt = db.prepare("DELETE FROM workers WHERE worker_id = ?");
   removeWorkerStmt.run(workerId);
 }
 
 export function stopAllWorkers() {
-  // MOVED from top level
   const stopAllWorkersStmt = db.prepare("UPDATE workers SET status = 'stopping' WHERE status = 'running'");
   stopAllWorkersStmt.run();
   console.log('Signal sent to all workers to stop gracefully.');
