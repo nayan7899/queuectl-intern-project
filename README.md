@@ -17,7 +17,7 @@ This project was built as a solution for a backend developer internship assignme
 ### CLI Demo
 
 
-* **[Click here to watch a live demo of QueueCTL in action]**(Paste your screen recording link here - e.g., Google Drive, Loom, YouTube)
+* **[Click here to watch a live demo of QueueCTL in action]** https://drive.google.com/file/d/1oF1JZ6JtxQcN2fyHlBuduQKDlhQmAa9Q/view?usp=sharing
 
 ## 🏛️ Architecture Overview
 
